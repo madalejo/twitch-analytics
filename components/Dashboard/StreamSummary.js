@@ -1,52 +1,41 @@
-import { Card, Text, Grid, Col } from '@nextui-org/react'
+import { Card, CardBody, CardHeader } from '@nextui-org/react'
 
 export default function StreamSummary({ stats }) {
   if (!stats) return null;
   
   return (
-    <Card css={{ p: '20px', h: '100%', w: '100%' }}>
-      <Card.Header>
-        <Text h3>Stream Summary</Text>
-      </Card.Header>
-      <Card.Body>
-        <Grid.Container gap={2}>
-          <Grid xs={6}>
-            <Card variant="flat">
-              <Card.Body css={{ textAlign: 'center', py: '10px' }}>
-                <Text h2 css={{ m: 0 }}>{stats.totalStreams || 0}</Text>
-                <Text>Total Streams</Text>
-              </Card.Body>
-            </Card>
-          </Grid>
-          <Grid xs={6}>
-            <Card variant="flat">
-              <Card.Body css={{ textAlign: 'center', py: '10px' }}>
-                <Text h2 css={{ m: 0 }}>{Math.round(stats.totalStreamTime || 0)}</Text>
-                <Text>Stream Hours</Text>
-              </Card.Body>
-            </Card>
-          </Grid>
-          <Grid xs={12}>
-            <Card variant="flat">
-              <Card.Body css={{ textAlign: 'center', py: '10px' }}>
-                <Text css={{ mb: '5px' }}>Recent Streams</Text>
-                {stats.streams && stats.streams.length > 0 ? (
-                  <ul style={{ textAlign: 'left', paddingLeft: '20px' }}>
-                    {stats.streams.slice(0, 5).map(stream => (
-                      <li key={stream.id}>
-                        {new Date(stream.start_time).toLocaleDateString()} 
-                        ({stream.viewer_count || 'N/A'} viewers)
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <Text css={{ color: 'gray' }}>No recent streams</Text>
-                )}
-              </Card.Body>
-            </Card>
-          </Grid>
-        </Grid.Container>
-      </Card.Body>
+    <Card className="h-full w-full">
+      <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+        <h3 className="font-bold text-large">Stream Summary</h3>
+      </CardHeader>
+      <CardBody className="overflow-visible py-2">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <Card className="p-4 text-center">
+            <p className="text-2xl font-bold">{stats.totalStreams || 0}</p>
+            <p className="text-small">Total Streams</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <p className="text-2xl font-bold">{Math.round(stats.totalStreamTime || 0)}</p>
+            <p className="text-small">Stream Hours</p>
+          </Card>
+        </div>
+        
+        <Card className="p-4">
+          <p className="mb-2 text-center">Recent Streams</p>
+          {stats.streams && stats.streams.length > 0 ? (
+            <ul className="text-left list-disc pl-5">
+              {stats.streams.slice(0, 5).map(stream => (
+                <li key={stream.id}>
+                  {new Date(stream.start_time).toLocaleDateString()} 
+                  ({stream.viewer_count || 'N/A'} viewers)
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-gray-500">No recent streams</p>
+          )}
+        </Card>
+      </CardBody>
     </Card>
   )
 }

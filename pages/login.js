@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/router'
-import { Button, Container, Card, Text, Spacer } from '@nextui-org/react'
+import { Button, Card, CardBody, CardHeader, Spacer } from '@nextui-org/react'
 
 export default function Login() {
   const router = useRouter()
@@ -10,10 +10,12 @@ export default function Login() {
   const handleTwitchLogin = async () => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signIn(
-        { provider: 'twitch' },
-        { redirectTo: `${window.location.origin}/dashboard` }
-      )
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'twitch',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      })
       if (error) throw error
     } catch (error) {
       alert(error.message)
@@ -23,24 +25,25 @@ export default function Login() {
   }
 
   return (
-    <Container xs css={{ mt: '100px', textAlign: 'center' }}>
-      <Card css={{ p: '40px' }}>
-        <Card.Header>
-          <Text h2>Twitch Viewer Analytics</Text>
-        </Card.Header>
-        <Card.Body>
-          <Text>Track your viewer engagement and growth over time</Text>
-          <Spacer y={2} />
+    <div className="flex justify-center items-center min-h-screen">
+      <Card className="w-full max-w-md">
+        <CardHeader className="flex justify-center">
+          <h2 className="text-2xl font-bold">Twitch Viewer Analytics</h2>
+        </CardHeader>
+        <CardBody>
+          <p className="text-center">Track your viewer engagement and growth over time</p>
+          <Spacer y={8} />
           <Button
             color="secondary"
             size="lg"
+            className="w-full"
             onClick={handleTwitchLogin}
-            disabled={loading}
+            isLoading={loading}
           >
             {loading ? 'Loading...' : 'Login with Twitch'}
           </Button>
-        </Card.Body>
+        </CardBody>
       </Card>
-    </Container>
+    </div>
   )
 }

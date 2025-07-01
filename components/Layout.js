@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { Navbar, Button, Text, Link, Container } from '@nextui-org/react'
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Link as NextUILink } from '@nextui-org/react'
 import NextLink from 'next/link'
 import { supabase } from '../lib/supabase'
 
@@ -20,80 +20,64 @@ export default function Layout({ children, user, loading }) {
 
   return (
     <>
-      <Navbar isCompact isBordered variant="sticky" maxWidth="fluid">
-        <Navbar.Brand>
-          <Text b color="inherit">
-            Twitch Viewer Analytics
-          </Text>
-        </Navbar.Brand>
+      <Navbar isBordered>
+        <NavbarBrand>
+          <p className="font-bold text-inherit">Twitch Viewer Analytics</p>
+        </NavbarBrand>
 
-        <Navbar.Content enableCursorHighlight hideIn="xs" variant="underline">
-          <Navbar.Link 
-            as={NextLink} 
-            href="/dashboard"
-            isActive={router.pathname === '/dashboard'}
-          >
-            Dashboard
-          </Navbar.Link>
-          <Navbar.Link 
-            as={NextLink} 
-            href="/streams"
-            isActive={router.pathname === '/streams' || router.pathname.startsWith('/streams/')}
-          >
-            Streams
-          </Navbar.Link>
-          <Navbar.Link 
-            as={NextLink} 
-            href="/viewers"
-            isActive={router.pathname === '/viewers' || router.pathname.startsWith('/viewers/')}
-          >
-            Viewers
-          </Navbar.Link>
-        </Navbar.Content>
+        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+          <NavbarItem isActive={router.pathname === '/dashboard'}>
+            <NextLink href="/dashboard" passHref>
+              Dashboard
+            </NextLink>
+          </NavbarItem>
+          <NavbarItem isActive={router.pathname === '/streams' || router.pathname.startsWith('/streams/')}>
+            <NextLink href="/streams" passHref>
+              Streams
+            </NextLink>
+          </NavbarItem>
+          <NavbarItem isActive={router.pathname === '/viewers' || router.pathname.startsWith('/viewers/')}>
+            <NextLink href="/viewers" passHref>
+              Viewers
+            </NextLink>
+          </NavbarItem>
+        </NavbarContent>
 
-        <Navbar.Content>
+        <NavbarContent justify="end">
           {user ? (
             <>
-              <Navbar.Item>
-                <Text>{user.email || user.user_metadata?.name || 'User'}</Text>
-              </Navbar.Item>
-              <Navbar.Item>
-                <Button auto flat onClick={handleSignOut}>
+              <NavbarItem>
+                <p className="text-sm">{user.email || user.user_metadata?.name || 'User'}</p>
+              </NavbarItem>
+              <NavbarItem>
+                <Button color="danger" variant="flat" onClick={handleSignOut}>
                   Sign Out
                 </Button>
-              </Navbar.Item>
+              </NavbarItem>
             </>
           ) : loading ? (
-            <Navbar.Item>
-              <Text>Loading...</Text>
-            </Navbar.Item>
+            <NavbarItem>
+              <p>Loading...</p>
+            </NavbarItem>
           ) : (
-            <Navbar.Item>
-              <Button auto flat as={NextLink} href="/login">
+            <NavbarItem>
+              <Button as={NextLink} color="primary" href="/login" variant="flat">
                 Sign In
               </Button>
-            </Navbar.Item>
+            </NavbarItem>
           )}
-        </Navbar.Content>
+        </NavbarContent>
       </Navbar>
 
-      <Container 
-        lg 
-        as="main" 
-        css={{ 
-          paddingTop: '2rem', 
-          paddingBottom: '4rem',
-          minHeight: 'calc(100vh - 76px)'
-        }}
-      >
+      <main className="container mx-auto px-6 py-8 min-h-screen">
         {children}
-      </Container>
+      </main>
 
-      <Container as="footer" css={{ textAlign: 'center', padding: '2rem 0' }}>
-        <Text size="small" color="gray">
+      <footer className="text-center p-8">
+        <p className="text-sm text-gray-500">
           © {new Date().getFullYear()} Twitch Viewer Analytics
-        </Text>
-      </Container>
+        </p>
+      </footer>
     </>
   )
 }
